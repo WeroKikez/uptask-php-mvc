@@ -31,12 +31,14 @@ class LoginController {
         ]);
     }
 
-    public static function olvide() {
-        echo "desde olvide";
-
+    public static function olvide( Router $router ) {
         if($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo "desde POST";
         }
+
+        $router->render('auth/olvide', [
+            'titulo' => 'Reestablece tu Password'
+        ]);
     }
 
     public static function reestablecer() {

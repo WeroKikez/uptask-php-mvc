@@ -1,8 +1,8 @@
-<div class="contenedor login">
+<div class="contenedor olvide">
     <?php include_once __DIR__ . '/../templates/nombre-sitio.php' ?>
 
     <div class="contenedor-sm">
-        <p class="descripcion-pagina">Iniciar Sesión</p>
+        <p class="descripcion-pagina">Coloca tu email y reestablece tu password</p>
 
         <form
             class="formulario"
@@ -19,16 +19,6 @@
                     name="email" >
             </div>
 
-            <div class="campo">
-                <label for="password">Password</label>
-
-                <input 
-                    type="password"
-                    id="password"
-                    placeholder="Tu Password"
-                    name="password" >
-            </div>
-
             <input 
                 class="boton" 
                 type="submit"
@@ -36,8 +26,8 @@
         </form>
 
         <div class="acciones">
-            <a href="/crear">¿Aún no tienes una cuenta? Obtener una</a>
-            <a href="/olvide">¿Olvidaste tu password?"</a>
+            <a href="/">¿Ya tienes cuenta? Inicia Sesión</a>
+            <a href="/olvide">¿Aún no tienes cuenta? Obten una</a>
         </div>
     </div> <!-- contenedor-sm -->
 </div>

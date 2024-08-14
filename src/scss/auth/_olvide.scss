@@ -1,23 +1,23 @@
 @use '../base/variables' as v;
 @use '../base/mixins' as m;
 
-.login {
+.olvide {
     margin-top: 5rem;
 
     .uptask {
-        @include m.textoDegradado(v.$cyan);
+        @include m.textoDegradado(v.$rosa);
     }
 
     input[type="submit"] {
-        @include m.boton(v.$cyan, v.$blanco);
+        @include m.boton(v.$rosa, v.$blanco);
     }
 
     .acciones {
         a {
-            color: v.$cyan;
+            color: v.$rosa;
 
             &:hover {
-                color: darken(v.$cyan, 7%);
+                color: darken(v.$rosa, 7%);
             }
         }
     }
