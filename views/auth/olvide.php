@@ -7,7 +7,7 @@
         <form
             class="formulario"
             method="POST" 
-            action="/"
+            action="/olvide"
         >
             <div class="campo">
                 <label for="email">Email</label>
@@ -22,7 +22,7 @@
             <input 
                 class="boton" 
                 type="submit"
-                value="Iniciar Sesión">
+                value="Enviar Instrucciones">
         </form>
 
         <div class="acciones">

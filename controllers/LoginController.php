@@ -37,23 +37,29 @@ class LoginController {
         }
 
         $router->render('auth/olvide', [
+            'titulo' => 'Olvidé mi Password'
+        ]);
+    }
+
+    public static function reestablecer( Router $router ) {
+        if($_SERVER['REQUEST_METHOD'] === 'POST') {
+            echo "desde POST";
+        }
+
+        $router->render('auth/reestablecer', [
             'titulo' => 'Reestablece tu Password'
         ]);
     }
 
-    public static function reestablecer() {
-        echo "desde olvide";
-
-        if($_SERVER['REQUEST_METHOD'] === 'POST') {
-            echo "desde POST";
-        }
+    public static function mensaje( Router $router ) {
+        $router->render('auth/mensaje', [
+            'titulo' => 'Cuenta Creada'
+        ]);
     }
 
-    public static function mensaje() {
-        echo "desde mensaje";
-    }
-
-    public static function confirmar() {
-        echo "desde confirmar";
+    public static function confirmar( Router $router) {
+        $router->render('auth/confirmar', [
+            'titulo' => 'Confirma tu Cuenta'
+        ]);
     }
 }

@@ -7,7 +7,7 @@
         <form
             class="formulario"
             method="POST" 
-            action="/"
+            action="/crear"
         >
             <div class="campo">
                 <label for="nombre">Nombre</label>
@@ -52,7 +52,7 @@
             <input 
                 class="boton" 
                 type="submit"
-                value="Iniciar Sesión">
+                value="Crear Cuenta">
         </form>
 
         <div class="acciones">
