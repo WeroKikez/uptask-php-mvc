@@ -35,7 +35,7 @@ class LoginController {
         $router->render('auth/crear', [
             'titulo' => 'Crea tu Cuenta',
             'usuario' => $usuario,
-            'errores' => $alertas['error']
+            'alertas' => $alertas
         ]);
     }
 
