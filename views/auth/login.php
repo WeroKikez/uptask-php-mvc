@@ -37,7 +37,7 @@
 
         <div class="acciones">
             <a href="/crear">¿Aún no tienes una cuenta? Obtener una</a>
-            <a href="/olvide">¿Olvidaste tu password?"</a>
+            <a href="/olvide">¿Olvidaste tu password?</a>
         </div>
     </div> <!-- contenedor-sm -->
 </div>

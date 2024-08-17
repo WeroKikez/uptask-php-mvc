@@ -27,7 +27,7 @@
 
         <div class="acciones">
             <a href="/">¿Ya tienes cuenta? Inicia Sesión</a>
-            <a href="/olvide">¿Aún no tienes cuenta? Obten una</a>
+            <a href="/crear">¿Aún no tienes cuenta? Obten una</a>
         </div>
     </div> <!-- contenedor-sm -->
 </div>
