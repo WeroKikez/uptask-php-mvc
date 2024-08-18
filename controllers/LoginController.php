@@ -2,6 +2,7 @@
 
 namespace Controllers;
 
+use Classes\Email;
 use Model\Usuario;
 use MVC\Router;
 
@@ -29,6 +30,34 @@ class LoginController {
             $usuario->sincronizar($_POST);
 
             $alertas = $usuario->validarNuevaCuenta();
+
+            if(empty($alertas)) {
+                $existeUsuario = Usuario::where('email', $usuario->email);
+                if($existeUsuario) {
+                    Usuario::setAlerta('error', 'Ya existe un usuario con ese Email');
+                    $alertas = $usuario->getAlertas();
+                } else {
+                    // Hashear el password
+                    $usuario->hashPassword();
+
+                    // Eliminar password2
+                    unset($usuario->password2);
+
+                    // Generar el token
+                    $usuario->generarToken();
+
+                    // Crear nuevo usuario
+                    $resultado = $usuario->guardar();
+
+                    // Enviar el email
+                    $email = new Email($usuario->email, $usuario->nombre, $usuario->token);
+                    $email->enviarConfirmacion();
+
+                    if($resultado){
+                        header('Location: /mensaje');
+                    }
+                }
+            } 
         }
 
         // Render a la vista
@@ -66,8 +95,33 @@ class LoginController {
     }
 
     public static function confirmar( Router $router) {
+        $token = s($_GET['token']);
+
+        if(!$token) header('Location: /');
+
+        // Encontrar al usuario
+        $usuario = Usuario::where('token', $token);
+
+        if(empty($usuario)) {
+            // Usuario no encontrado
+            Usuario::setAlerta('error', 'Token no válido');
+        } else {
+            // Confirmar la cuenta
+            $usuario->confirmado = 1;
+            $usuario->token = null;
+            unset($usuario->password2);
+
+            // Guardar en la DB
+            $usuario->guardar();
+
+            Usuario::setAlerta('exito', 'Cuenta confirmada, ya puedes iniciar sesión');
+        }
+
+        $alertas = Usuario::getAlertas();
+
         $router->render('auth/confirmar', [
-            'titulo' => 'Confirma tu Cuenta'
+            'titulo' => 'Confirma tu Cuenta',
+            'alertas' => $alertas
         ]);
     }
 }
