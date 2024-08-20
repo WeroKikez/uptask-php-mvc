@@ -4,6 +4,8 @@
     <div class="contenedor-sm">
         <p class="descripcion-pagina">Coloca tu email y reestablece tu password</p>
 
+        <?php include_once __DIR__ . '/../templates/alertas.php' ?>
+
         <form
             class="formulario"
             method="POST" 
