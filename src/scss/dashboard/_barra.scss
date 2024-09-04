@@ -24,8 +24,11 @@
 
     .cerrar-sesion {
         @include m.boton(darken(v.$indigo, 20%), v.$blanco);
-        font-size: 1.5rem;
-        padding: 1.4rem;
-        border-radius: .5rem;
+        
+        & { 
+            font-size: 1.5rem;
+            padding: 1.4rem;
+            border-radius: .5rem;
+        }
     }
 }
