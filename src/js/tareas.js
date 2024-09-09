@@ -25,7 +25,7 @@
                         class="submit-nueva-tarea"
                         value="Añadir Tarea"
                     />
-                    <button type="button" class"cerrar-modal">Cancelar</button>
+                    <button type="button" class="cerrar-modal">Cancelar</button>
                 </div>
             </form>
         `
@@ -33,7 +33,21 @@
         setTimeout(() => {
             const formulario = document.querySelector('.formulario')
             formulario.classList.add('animar')
-        }, 0);
+        }, 10);
+
+        modal.addEventListener('click', (e) => {
+            e.preventDefault()
+
+            if(e.target.classList.contains('cerrar-modal') || e.target.classList.contains('modal')) {
+                const formulario = document.querySelector('.formulario')
+                formulario.classList.add('cerrar')
+                
+                setTimeout(() => {
+                    modal.remove()
+                }, 400);
+            }
+        })
+
         document.querySelector('body').appendChild(modal)
     }
 })()
