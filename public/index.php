@@ -35,5 +35,8 @@ $router->post('/crear-proyecto', [DashboardController::class, 'crear_proyecto'])
 $router->get('/proyecto', [DashboardController::class, 'proyecto']);
 $router->get('/perfil', [DashboardController::class, 'perfil']);
 
+// API para las Tareas
+
+
 // Comprueba y valida las rutas, que existan y les asigna las funciones del Controlador
 $router->comprobarRutas();
