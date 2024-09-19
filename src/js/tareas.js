@@ -25,7 +25,7 @@
                         class="submit-nueva-tarea"
                         value="Añadir Tarea"
                     />
-                    <button type="button" class="cerrar-modal">Cancelar</button>
+                    <button type="button" class="cerrar-modal">Cancelar</button> 
                 </div>
             </form>
         `
@@ -48,6 +48,7 @@
             }
 
             if(e.target.classList.contains('submit-nueva-tarea')) {
+                e.target.disabled = true;
                 submitFormNuevaTarea()
             }
         })
@@ -60,8 +61,7 @@
 
         if(tarea === '') {
             // Mostar alerta de error
-            mostarAlerta('El nombre de la tarea es obligatorio', 'error', document.querySelector('.formulario legend'))
-
+            mostrarAlerta('El nombre de la tarea es obligatorio', 'error', document.querySelector('.formulario legend'))
             return
         }
 
@@ -69,7 +69,7 @@
     }
 
     // Muestra un mensaje en la interfaz
-    function mostarAlerta(mensaje, tipo, referencia) {
+    function mostrarAlerta(mensaje, tipo, referencia) {
         // Previene la creación de múltiples alertas
         const alertaPrevia = document.querySelector('.alerta')
         if(alertaPrevia) {
@@ -97,6 +97,7 @@
         // Construir la petición 
         const datos = new FormData()
         datos.append('nombre', tarea)
+        datos.append('proyectoId', obtenerProyecto())
 
         try {
             const url = 'http://localhost:3200/api/tarea'
@@ -106,10 +107,28 @@
             })
 
             const resultado = await respuesta.json();
-            console.log(resultado)
+
+            // Mostar alerta de error
+            mostrarAlerta(resultado.mensaje, resultado.tipo, document.querySelector('.formulario legend'))
+
+            if(resultado.tipo === 'exito') {
+                const modal = document.querySelector('.modal')
+                setTimeout(() => {
+                    modal.remove()
+                }, 3000);
+            }
         } catch (error) {
-            console.log("Ha Ocurrido Un Error")
+            console.error("Ha Ocurrido Un Error: ")
             console.error(error)
         }
+    }
+
+    function obtenerProyecto() {
+        const proyectoParams = new URLSearchParams(window.location.search)
+        const proyectoId = proyectoParams.get('id')
+
+        // const proyecto = Object.fromEntries(proyectoParams.entries())
+        // console.log(proyecto.id)
+        return proyectoId
     }
 })()
