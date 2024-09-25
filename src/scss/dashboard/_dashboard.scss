@@ -38,6 +38,12 @@
                 font-weight: bold;
                 font-size: 1.4rem;
             }
+
+            &.blocked {
+                background-color: v.$gris;
+                color: v.$blanco;
+                cursor: not-allowed;
+            }
         }
     }
 }

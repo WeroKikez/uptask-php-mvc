@@ -1,6 +1,7 @@
 (function() {
 
     obtenerTareas()
+    let tareas = []
     
     // Botón para mostrar el modal de agregar tarea
     const nuevaTareaBtn = document.querySelector('#agregar-tarea')
@@ -12,15 +13,17 @@
             const url = `/api/tareas?id=${id}`
             const respuesta = await fetch(url)
             const resultado = await respuesta.json()
-            const { tareas } = resultado
-            mostrarTareas(tareas)
+            
+            tareas = resultado.tareas
+            mostrarTareas()
         } catch (error) {
             console.error("Ha Ocurrido Un Error: ")
             console.error(error)
         }
     }
 
-    function mostrarTareas(tareas) {
+    function mostrarTareas() {
+        limpiarTareas()
         if(tareas.length === 0) {
             const contenedorTareas = document.querySelector('#listado-tareas')
             const textoNoTareas = document.createElement('LI')
@@ -178,9 +181,22 @@
 
             if(resultado.tipo === 'exito') {
                 const modal = document.querySelector('.modal')
+                bloquearBotonSubmit()   
                 setTimeout(() => {
                     modal.remove()
                 }, 3000);
+
+                // Agregar el objeto de tarea al global de tareas
+                const tareaObj = {
+                    id: String(resultado.id),
+                    nombre: tarea,
+                    estado: 0,
+                    proyectoId: resultado.proyectoId
+                }
+
+                tareas = [...tareas, tareaObj]
+                mostrarTareas()
+
             }
         } catch (error) {
             console.error("Ha Ocurrido Un Error: ")
@@ -195,5 +211,20 @@
         // const proyecto = Object.fromEntries(proyectoParams.entries())
         // console.log(proyecto.id)
         return proyectoId
+    }
+
+    function bloquearBotonSubmit() {
+        const btnSubmit = document.querySelector('.submit-nueva-tarea')
+        btnSubmit.classList.add('blocked')
+        btnSubmit.disabled = true
+        btnSubmit.value = 'Agregando...'
+    }
+
+    function limpiarTareas() {
+        const listadoTareas = document.querySelector('#listado-tareas')
+        
+        while (listadoTareas.firstChild) {
+            listadoTareas.removeChild(listadoTareas.firstChild)
+        }
     }
 })()
