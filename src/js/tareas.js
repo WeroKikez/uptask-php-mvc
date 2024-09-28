@@ -55,6 +55,9 @@
             btnEstadoTarea.classList.add(`${estados[tarea.estado].toLowerCase()}`)
             btnEstadoTarea.textContent = estados[tarea.estado]
             btnEstadoTarea.dataset.estadoTarea = tarea.estado
+            btnEstadoTarea.ondblclick = () => {
+                cambiarEstadoTarea({...tarea})
+            }
 
             const btnEliminarTarea = document.createElement('BUTTON')
             btnEliminarTarea.classList.add('eliminar-tarea')
@@ -204,6 +207,41 @@
         }
     }
 
+    function cambiarEstadoTarea(tarea) {
+        const nuevoEstado = tarea.estado === "1" ? "0" : "1"
+        tarea.estado = nuevoEstado
+        actualizarTarea(tarea)
+    }
+
+    async function actualizarTarea(tarea) {
+        const { id, nombre, estado, proyectoId } = tarea
+        const datos = new FormData()
+        datos.append('id', id)
+        datos.append('nombre', nombre)
+        datos.append('estado', estado)
+        datos.append('proyectoId', obtenerProyecto())
+
+        try {
+            const url = 'http://localhost:3200/api/tarea/actualizar'
+            const respuesta = await fetch(url, {
+                method: 'POST',
+                body: datos
+            })
+
+            const resultado = await respuesta.json()
+            if(resultado.respuesta.tipo === 'exito') {
+                mostrarAlerta(resultado.respuesta.mensaje, resultado.respuesta.tipo, document.querySelector('.contenedor-nueva-tarea'))
+                
+                tareas = tareas.map( tareaMemoria => tareaMemoria.id === resultado.respuesta.id ? {...tareaMemoria, estado: estado} : tareaMemoria )
+                
+                mostrarTareas()
+            }
+        } catch (error) {
+            console.error("Ha Ocurrido Un Error: ")
+            console.error(error)
+        }
+    }
+    
     function obtenerProyecto() {
         const proyectoParams = new URLSearchParams(window.location.search)
         const proyectoId = proyectoParams.get('id')
