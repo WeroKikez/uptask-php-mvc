@@ -63,6 +63,9 @@
             btnEliminarTarea.classList.add('eliminar-tarea')
             btnEliminarTarea.dataset.tareaId = tarea.id
             btnEliminarTarea.textContent = 'Eliminar'
+            btnEliminarTarea.ondblclick = ()  => {
+                confirmarEliminarTarea(tarea)
+            }
 
             opcionesDiv.appendChild(btnEstadoTarea)
             opcionesDiv.appendChild(btnEliminarTarea)
@@ -187,7 +190,7 @@
                 bloquearBotonSubmit()   
                 setTimeout(() => {
                     modal.remove()
-                }, 3000);
+                }, 1500);
 
                 // Agregar el objeto de tarea al global de tareas
                 const tareaObj = {
@@ -220,14 +223,14 @@
         datos.append('nombre', nombre)
         datos.append('estado', estado)
         datos.append('proyectoId', obtenerProyecto())
-
+        
         try {
             const url = 'http://localhost:3200/api/tarea/actualizar'
             const respuesta = await fetch(url, {
                 method: 'POST',
                 body: datos
             })
-
+            
             const resultado = await respuesta.json()
             if(resultado.respuesta.tipo === 'exito') {
                 mostrarAlerta(resultado.respuesta.mensaje, resultado.respuesta.tipo, document.querySelector('.contenedor-nueva-tarea'))
@@ -242,6 +245,53 @@
         }
     }
     
+    function confirmarEliminarTarea(tarea) {
+        swal({
+            title: "¿Seguro que deseas eliminar la tarea?",
+            text: "Una vez eliminada, no podrás recuperarla",
+            icon: "warning",
+            buttons: true,
+            buttons: ["Cancelar", "Eliminar"],
+            dangerMode: true,
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+                eliminarTarea(tarea)
+            }
+        });
+    }
+
+    async function eliminarTarea(tarea) {
+        const { id, nombre, estado } = tarea
+        const datos = new FormData()
+        datos.append('id', id)
+        datos.append('nombre', nombre)
+        datos.append('estado', estado)
+        datos.append('proyectoId', obtenerProyecto())
+        
+        try {
+            const url = 'http://localhost:3200/api/tarea/eliminar'
+
+            const respuesta = await fetch(url, {
+                method: 'POST',
+                body: datos
+            })
+
+            const resultado = await respuesta.json()
+            if(resultado.resultado) {
+                // mostrarAlerta(resultado.mensaje, resultado.tipo, document.querySelector('.contenedor-nueva-tarea'))
+                swal(resultado.mensaje, {
+                    icon: 'success',
+                });
+                tareas = tareas.filter( tarea => tarea.id !== id )
+                mostrarTareas()
+            }
+        } catch (error) {
+            console.error("Ha Ocurrido Un Error: ")
+            console.error(error)
+        }
+    }
+
     function obtenerProyecto() {
         const proyectoParams = new URLSearchParams(window.location.search)
         const proyectoId = proyectoParams.get('id')
