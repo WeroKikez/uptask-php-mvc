@@ -5,7 +5,9 @@
     
     // Botón para mostrar el modal de agregar tarea
     const nuevaTareaBtn = document.querySelector('#agregar-tarea')
-    nuevaTareaBtn.addEventListener('click', mostrarFormulario)
+    nuevaTareaBtn.addEventListener('click', () => {
+        mostrarFormulario()
+    })
 
     async function obtenerTareas() {
         try {
@@ -45,6 +47,9 @@
 
             const nombreTarea = document.createElement('P')
             nombreTarea.textContent = tarea.nombre
+            nombreTarea.ondblclick = () => {
+                mostrarFormulario(true, {...tarea})
+            }
 
             const opcionesDiv = document.createElement('DIV')
             opcionesDiv.classList.add('opciones')
@@ -78,19 +83,20 @@
         });
     }
 
-    function mostrarFormulario() {
+    function mostrarFormulario( editar = false, tarea = {} ) {
         const modal = document.createElement('DIV')
         modal.classList.add('modal')
         modal.innerHTML = `
             <form class="formulario nueva-tarea">
-                <legend>Añade Una Nueva Tarea</legend>
+                <legend>${editar ? 'Editar Tarea' : 'Añadir Nueva Tarea'}</legend>
                 <div class="campo">
                     <label for="tarea">Tarea</label>
                     <input
                         name="tarea"
                         type="text"
-                        placeholder="Añadir Tarea Al Proyecto Actual"
+                        placeholder="${editar ? 'Editar La Tarea' : 'Añadir Tarea Al Proyecto Actual'}"
                         id="tarea"
+                        value="${tarea.nombre ? tarea.nombre : ''}"
                     />
                 </div>
 
@@ -98,7 +104,7 @@
                     <input
                         type="submit"
                         class="submit-nueva-tarea"
-                        value="Añadir Tarea"
+                        value="${editar ? 'Guardar Cambios' : 'Añadir Tarea'}"
                     />
                     <button type="button" class="cerrar-modal">Cancelar</button> 
                 </div>
@@ -115,7 +121,7 @@
 
             if(e.target.classList.contains('cerrar-modal') || e.target.classList.contains('modal')) {
                 const formulario = document.querySelector('.formulario')
-                formulario.classList.add('cerrar')
+                 formulario.classList.add('cerrar')
                 
                 setTimeout(() => {
                     modal.remove()
@@ -123,23 +129,20 @@
             }
 
             if(e.target.classList.contains('submit-nueva-tarea')) {
-                submitFormNuevaTarea()
+                const nombreTarea = document.querySelector('#tarea').value.trim()
+
+                if(nombreTarea === '') {
+                    // Mostar alerta de error
+                    mostrarAlerta('El nombre de la tarea es obligatorio', 'error', document.querySelector('.formulario legend'))
+                    return
+                }
+
+                tarea.nombre = nombreTarea
+                editar ? actualizarTarea(tarea) : agregarTarea(nombreTarea)
             }
         })
 
         document.querySelector('.dashboard').appendChild(modal)
-    }
-
-    function submitFormNuevaTarea() {
-        const tarea = document.querySelector('#tarea').value.trim()
-
-        if(tarea === '') {
-            // Mostar alerta de error
-            mostrarAlerta('El nombre de la tarea es obligatorio', 'error', document.querySelector('.formulario legend'))
-            return
-        }
-
-        agregarTarea(tarea)
     }
 
     // Muestra un mensaje en la interfaz
@@ -217,7 +220,7 @@
     }
 
     async function actualizarTarea(tarea) {
-        const { id, nombre, estado, proyectoId } = tarea
+        const { id, nombre, estado } = tarea
         const datos = new FormData()
         datos.append('id', id)
         datos.append('nombre', nombre)
@@ -233,9 +236,16 @@
             
             const resultado = await respuesta.json()
             if(resultado.respuesta.tipo === 'exito') {
-                mostrarAlerta(resultado.respuesta.mensaje, resultado.respuesta.tipo, document.querySelector('.contenedor-nueva-tarea'))
+                swal("Tarea Actualizada", resultado.respuesta.mensaje, "success");
                 
-                tareas = tareas.map( tareaMemoria => tareaMemoria.id === resultado.respuesta.id ? {...tareaMemoria, estado: estado} : tareaMemoria )
+                const modal = document.querySelector('.modal')
+                if(modal){
+                    setTimeout(() => {
+                        modal.remove()
+                    }, 1000);
+                }
+                
+                tareas = tareas.map( tareaMemoria => tareaMemoria.id === resultado.respuesta.id ? {...tareaMemoria, estado: estado, nombre: nombre} : tareaMemoria )
                 
                 mostrarTareas()
             }
