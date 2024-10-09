@@ -56,6 +56,10 @@
                     cursor: pointer;
                 }
             }
+
+            @include m.tablet {
+                display: none;
+            }
         }
     }
 
@@ -65,16 +69,36 @@
         a {
             color: v.$blanco;
             display: block;
-            margin-bottom: 1.5rem;
             padding: .7rem;
             transition-property: background-color;
             transition-duration: 300ms;
+            font-size: 2.4rem;
+            margin-bottom: 2rem;
+            text-align: center;
             
             &:hover,
             &.activo {
                 background-color: darken(v.$indigo, 20%);
                 border-radius: .5rem;
             }
+            
+            @include m.tablet {
+                font-size: 1.6rem;
+                margin-bottom: 1.5rem;
+                text-align: left;
+            }
+        }
+    }
+
+    .cerrar-sesion-mobile {
+        margin-top: 10rem;
+        
+        .cerrar-sesion {
+            @include m.boton(v.$indigo, v.$blanco);
+        }
+
+        @include m.tablet {
+            display: none;
         }
     }
 }
