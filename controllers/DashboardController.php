@@ -3,6 +3,7 @@
 namespace Controllers;
 
 use Model\Proyecto;
+use Model\Usuario;
 use MVC\Router;
 
 class DashboardController {
@@ -77,9 +78,30 @@ class DashboardController {
         session_start();
 
         isAuth();
+        
+        $alertas = [];
+        $usuario = Usuario::find($_SESSION['id']);
+
+        if($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $usuario->sincronizar($_POST);
+            $alertas = $usuario->validarPerfil();
+
+            if(empty($alertas)) {
+                // Guardar el usuario
+                $usuario->guardar();
+
+                Usuario::setAlerta('exito', 'Perfil actualizado correctamente');
+                $alertas = $usuario->getAlertas();
+
+                // Asignar el nombre nuevo a la barra
+                $_SESSION['nombre'] = $usuario->nombre;
+            }
+        }
 
         $router->render('dashboard/perfil', [
-            'titulo' => 'Mi Perfil'
+            'titulo' => 'Mi Perfil',
+            'usuario' => $usuario,
+            'alertas' => $alertas
         ]);
     }
 }   
