@@ -46,4 +46,13 @@
             }
         }
     }
+
+    .enlace {
+        color: v.$indigo;
+        margin-top: 2rem;
+
+        &:hover {
+            color: darken(v.$indigo, 20%);
+        }
+    }
 }
